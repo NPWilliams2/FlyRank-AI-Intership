@@ -115,14 +115,25 @@ def create_task(task: TaskCreate):
             content={"error": "Title cannont be empty"}
         )
 
-    new_task = {
-        "id": max(t["id"] for t in tasks) + 1,
-        "title": task.title,
-        "done": False
-    }
+    connection = get_db_connection()
 
-    tasks.append(new_task)
-    return new_task
+    cursor = connection.execute(
+        "INSERT INTO tasks (title, done) VALUES (?, ?)",
+        (task.title, False)
+    )
+
+    connection.commit()
+
+    new_task_id = cursor.lastrowid
+
+    row = connection.execute(
+        "SELECT * FROM tasks WHERE id = ?",
+        (new_task_id,)
+    ).fetchone()
+
+    connection.close()
+
+    return dict(row)
 
 @app.put("/tasks/{task_id}", description="Updates an existing task")
 def update_task(task_id: int, task: TaskUpdate):
