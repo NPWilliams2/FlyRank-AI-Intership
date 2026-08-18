@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 from fastapi import FastAPI
@@ -46,8 +47,12 @@ def seed_tasks():
 
     connection.close()
 
+database_existed = os.path.exists("tasks.db")
+
 create_table()
-seed_tasks()
+
+if not database_existed:
+    seed_tasks()
 
 tasks = [
     {"id": 1, "title": "Buy Milk", "done": False},
