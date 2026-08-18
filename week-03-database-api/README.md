@@ -1,94 +1,59 @@
-# Task CRUD API
+# Task CRUD API with SQLite
 
-A simple FastAPI project that manges a to-do list using CRUD operations.
+This project extends the original FastAPI CRUD API by replacing the in-memory task list with a SQLite database.
 
-This API allows users to create, read, update, and delete tasks. The project uses in-memory storage and includes automatic Swagger UI documentation provided by FastAPI.
+The API endpoints remain the same, but tasks are now stored persistently so they survive server restarts.
 
-## Installation
+## Why SQLite?
 
-1. Clone the repository:
+SQLite was chosen because it is lightweight, simple to use, and does not require a seperate database server. It stores the database in a single file, which make it suitable for a beginner backend project while still providing real data persistence.
 
-```bash
-git clone <repository-url>
-```
+## Database
 
-2. Navigate to the project folder:
+The application uses a SQLite database named:
 
-```bash
-cd week-02-crud-api
-```
+'tasks.db'
 
-3. Create a virtual environment:
+The database file is inside the 'week-03-database-api' folder.
 
-```bash
-python -m venv .venv
-```
+When the application is run for the first time, it automatically creates the database and the 'tasks' table. Three example tasks are also added on the first run.
 
-4. Activate the virtual environment:
+## How to Run the Project
 
-**Windows (PowerShell):**
+1. Open a terminal inside the `week-03-database-api` folder.
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
+2. Install the required packages:
 
-5. Install the required packages:
+   ```bash
+   pip install fastapi uvicorn
 
-```bash
-pip install fastapi uvicorn
-```
+3. Start the FastAPI server:
 
-## Running the API
+   uvicorn main:app --reload
 
-Start the server with:
+4. Open the Swagger UI in your browser:
 
-```bash
-uvicorn main:app --reload
-```
+   http://127.0.0.1:8000/docs
 
-The API will be available at:
+The API and SQLite database are now ready for use.
 
-- API: `http://localhost:8000`
-- Swagger UI: `http://localhost:8000/docs`
+## Example SQL Query
 
-## API Endpoints
+During development, I used DB Browser for SQLite to inspect and modify the database directly.
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Returns basic information about the API. |
-| GET | `/health` | Checks if the API is running. |
-| GET | `/tasks` | Returns all tasks. |
-| GET | `/tasks/{task_id}` | Returns a task by its ID. |
-| POST | `/tasks` | Creates a new task. |
-| PUT | `/tasks/{task_id}` | Updates an existing task. |
-| DELETE | `/tasks/{task_id}` | Deletes a task. |
+For example, this query returns all completed tasks:
 
-## Example Request
+```sql
+SELECT * FROM tasks WHERE done = 1;
 
-Example using `curl` to retrieve all tasks:
+This demonstrated how SQL can filter rows using a WHERE clause and allowed me to verify the results against the FastAPI GET /tasks endpoint.
 
-```bash
-curl -i http://localhost:8000/tasks
-```
+## Database Screenshot
 
-Example response:
+The `tasks` table viewed using DB Browser for SQLite:
 
-```http
-HTTP/1.1 200 OK
-content-type: application/json
+![SQLite tasks database](database-1.png)
 
-[
-  {
-    "id": 1,
-    "title": "Buy milk",
-    "done": false
-  },
-  {
-    "id": 2,
-    "title": "Complete internship assignment",
-    "done": false
-  }
-]
-```
+## Author
 
-![alt text](endpoints.png)
+Nikos Paul Williams
